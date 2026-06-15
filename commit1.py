@@ -8,12 +8,12 @@ import pyautogui
 import time 
 
 def load(driver):
-    driver.get("")
+    driver.get("https://omni.top-academy.ru")
 
     search_input_login = driver.find_element(By.XPATH, "//input[@ng-model='form.username']")
     search_input_login.send_keys("katyrlo_g@t.top-academy.ru")
     search_input_pass = driver.find_element(By.XPATH, "//input[@ng-model='form.password']")
-    search_input_pass.send_keys("")
+    search_input_pass.send_keys("H6xvaxS3181G")
     search_input_login.submit()
 
 def load_page(driver):
@@ -78,7 +78,7 @@ def name(driver):
     # print(find_name_material.text)
     return find_name_material.text
     
-def test(driver,i):
+def copy_lesson(driver,i):
 
     file_name = name(driver)
     time.sleep(4)
@@ -104,57 +104,87 @@ def test(driver,i):
     # doc.add_paragraph(add)
     # doc.save("lesson_test_v1_0.docx")
 
+
+def new_window_for_lesson(driver):
+    try:
+        input_element = driver.find_element(By.ID, "input_270")
+        text_from_input = input_element.get_attribute("value")
+        driver.switch_to.new_window(WindowTypes.TAB)
+        try:
+            driver.get(f"{text_from_input}")
+        except Exception as ex:
+            print("Error get", ex)
+        time.sleep(6)
+    
+    except:
+        for i in range(3):
+            input_element = driver.find_element(By.ID, "input_281")
+            text_from_input = input_element.get_attribute("value")
+            print(f"attempt {i}")
+    
+def save_lesson_word(driver):
+        try:
+            div_element = driver.find_element(By.XPATH, "//div[@data-elementor-type='wp-page']")
+            text_scrape = driver.execute_script("return arguments[0].innerHTML;", div_element)
+            print(f"len {len(text_scrape)}")
+
+            # doc = Document()
+            # doc.add_paragraph(text_scrape)
+            
+            # file_path = os.path.abspath('урок 1425.docx')
+            # file_size = os.path.getsize('урок 1425.docx')
+            # doc.save('урок 1425.docx')
+            # print(f"peth: {file_path}, size: {file_size}")
+        except Exception as ex:
+            print("Error", ex)
+
 def find_all_element_button_lesson(driver):
     time.sleep(5)
 
     
     for i in range(1,19):
         try:
+            time.sleep(5)
             find_lesson = driver.find_element(By.XPATH, f"//span[contains(text(), 'Урок {i}')]")
             # print(f"найден {i}")
+            
             if find_lesson:
                 try:
                     find_lesson.click()
+                    time.sleep(3)
+                    find_link_lesson = driver.find_element(By.XPATH, "//span[@class='posts-link ng-scope']")
 
-                    input_element = driver.find_element(By.ID, "input_270")
+                    if find_link_lesson:
 
-                    try:
-                        
-                        text_from_input = input_element.get_attribute("value")
+                       
+                        find_link_lesson.click()
+                        save_lesson_word(driver)
+                        try:
+                            copy_lesson(driver,i)
+                        except:
+                            find_elem_button_download = driver.find_element(By.XPATH, "//cr-icon-button[@id='save']")
+                            find_elem_button_download.click()
+                            x = 1050
+                            y = 680
+                            pyautogui.moveTo(x,y)
+                            pyautogui.click()
+                        # driver.close()
+                        time.sleep(10)
                         driver.switch_to.new_window(WindowTypes.TAB)
-                        try:
-                            driver.get(f"{text_from_input}")
-                        except Exception as ex:
-                            print("Error get", ex)
-                        time.sleep(6)
+                        driver.get("https://omni.top-academy.ru/#/bind/materials")
+                        
+                        time.sleep(10)
+                    else:
 
-                        try:
-                            div_element = driver.find_element(By.XPATH, "//div[@data-elementor-type='wp-page']")
-                            text_scrape = driver.execute_script("return arguments[0].innerHTML;", div_element)
-                            print(f"len {len(text_scrape)}")
-                            test(driver,i)
-                            # driver.close()
-                            time.sleep(10)
-                            driver.switch_to.new_window(WindowTypes.TAB)
-                            driver.get("https://omni.top-academy.ru/#/bind/materials")
-                            
-                            time.sleep(10)
-
-                            # doc = Document()
-                            # doc.add_paragraph(text_scrape)
-                            
-                            # file_path = os.path.abspath('урок 1425.docx')
-                            # file_size = os.path.getsize('урок 1425.docx')
-                            # doc.save('урок 1425.docx')
-                            # print(f"peth: {file_path}, size: {file_size}")
-                        except Exception as ex:
-                            print("Error", ex)
-                    
-                    except:
-                        for i in range(3):
-                            input_element = driver.find_element(By.ID, "input_281")
-                            text_from_input = input_element.get_attribute("value")
-                            print(f"attempt {i}")
+                        new_window_for_lesson(driver)
+                        save_lesson_word(driver)
+                        copy_lesson(driver,i)
+            # driver.close()
+                        time.sleep(10)
+                        driver.switch_to.new_window(WindowTypes.TAB)
+                        driver.get("https://omni.top-academy.ru/#/bind/materials")
+                        
+                        time.sleep(10)
 
 
                 except Exception as ex:
