@@ -11,9 +11,9 @@ def load(driver):
     driver.get("https://omni.top-academy.ru")
 
     search_input_login = driver.find_element(By.XPATH, "//input[@ng-model='form.username']")
-    search_input_login.send_keys("katyrlo_g@t.top-academy.ru")
+    search_input_login.send_keys("")
     search_input_pass = driver.find_element(By.XPATH, "//input[@ng-model='form.password']")
-    search_input_pass.send_keys("H6xvaxS3181G")
+    search_input_pass.send_keys("")
     search_input_login.submit()
 
 def load_page(driver):
@@ -39,11 +39,11 @@ def click_materials():
     pyautogui.click() 
     time.sleep(5)
 
-def find_id_material(driver):
-        
+def find_id_material(driver, i):
+    
     try:
         elements = WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable((By.XPATH, "//md-option[@id='select_option_323']"))
+            EC.element_to_be_clickable((By.XPATH, f"//md-option[@id='select_option_{i}']"))
         )           
         # find_id = driver.find_element(By.XPATH, )
         elements.click()    
@@ -75,15 +75,15 @@ def find_id_material(driver):
 def name(driver):
     find_name_material = driver.find_element(By.XPATH, "//h2[@class='has-link-color zag wp-elements-caae2e1386b1d9e9dfd57ba858ee841f wp-block-post-title has-text-color has-background-color has-background has-transparent-background-color has-large-font-size']")
     time.sleep(3)
-    # print(find_name_material.text)
+    print(find_name_material.text)
     return find_name_material.text
     
 def copy_lesson(driver,i):
 
     file_name = name(driver)
     time.sleep(4)
-    x = 463 #338
-    y = 1095 #790
+    x = 338 #338
+    y = 1210 #790
     pyautogui.moveTo(x,y)
     pyautogui.mouseDown(button="left")
     pyautogui.moveRel(0,1000, duration=10)
@@ -106,8 +106,8 @@ def copy_lesson(driver,i):
 
 
 def new_window_for_lesson(driver):
-    try:
-        input_element = driver.find_element(By.ID, "input_270")
+    
+        input_element = driver.find_element(By.ID, "input_266")
         text_from_input = input_element.get_attribute("value")
         driver.switch_to.new_window(WindowTypes.TAB)
         try:
@@ -116,11 +116,11 @@ def new_window_for_lesson(driver):
             print("Error get", ex)
         time.sleep(6)
     
-    except:
-        for i in range(3):
-            input_element = driver.find_element(By.ID, "input_281")
-            text_from_input = input_element.get_attribute("value")
-            print(f"attempt {i}")
+    # except:
+    #     for i in range(3):
+    #         input_element = driver.find_element(By.ID, "input_281")
+    #         text_from_input = input_element.get_attribute("value")
+    #         print(f"attempt {i}")
     
 def save_lesson_word(driver):
         try:
@@ -149,33 +149,54 @@ def find_all_element_button_lesson(driver):
             # print(f"найден {i}")
             
             if find_lesson:
+                find_lesson.click()
+                time.sleep(3)
                 try:
-                    find_lesson.click()
-                    time.sleep(3)
                     find_link_lesson = driver.find_element(By.XPATH, "//span[@class='posts-link ng-scope']")
 
-                    if find_link_lesson:
+                    # if find_link_lesson:
+                    print("find element")
+                    find_link_lesson.click()
+                    # try:
+                    #     save_lesson_word(driver)
+                    # except Exception as ex:
+                    #     print("no find element")
+                    # try:
+                    #     copy_lesson(driver,i)
+                    # except:
+                    time.sleep(3)
+                    print("tested1")
+                    
+                    x = 1106
+                    y = 274
+                    pyautogui.moveTo(x,y)
+                    pyautogui.click()
 
-                       
-                        find_link_lesson.click()
-                        save_lesson_word(driver)
-                        try:
-                            copy_lesson(driver,i)
-                        except:
-                            find_elem_button_download = driver.find_element(By.XPATH, "//cr-icon-button[@id='save']")
-                            find_elem_button_download.click()
-                            x = 1050
-                            y = 680
-                            pyautogui.moveTo(x,y)
-                            pyautogui.click()
-                        # driver.close()
-                        time.sleep(10)
-                        driver.switch_to.new_window(WindowTypes.TAB)
-                        driver.get("https://omni.top-academy.ru/#/bind/materials")
-                        
-                        time.sleep(10)
-                    else:
-
+                    x = 1050
+                    y = 680
+                    pyautogui.moveTo(x,y)
+                    time.sleep(2)
+                    pyautogui.click()
+                    # driver.close()
+                    time.sleep(10)
+                    driver.switch_to.new_window(WindowTypes.TAB)
+                    driver.get("https://omni.top-academy.ru/#/bind/materials")
+                    
+                    time.sleep(10)
+                    # else:
+                    #     print("No find element")
+                    #     new_window_for_lesson(driver)
+                    #     save_lesson_word(driver)
+                    #     copy_lesson(driver,i)
+            # driver.close()
+                    # time.sleep(10)
+                    # driver.switch_to.new_window(WindowTypes.TAB)
+                    # driver.get("https://omni.top-academy.ru/#/bind/materials")
+                    
+                    # time.sleep(10)
+                except Exception as ex:
+                        print(ex)
+                        print("TEsted excepted")
                         new_window_for_lesson(driver)
                         save_lesson_word(driver)
                         copy_lesson(driver,i)
@@ -185,41 +206,42 @@ def find_all_element_button_lesson(driver):
                         driver.get("https://omni.top-academy.ru/#/bind/materials")
                         
                         time.sleep(10)
-
-
-                except Exception as ex:
-                    print("Error", ex)
             else:
                 print("Error")
         except Exception as ex:
             print(f"Не найден элемент {i} {ex}")
             break
 
-def find_all_elements(driver):
-    time.sleep(10)
-    try:
-        i = 0
-        while True:
-            test = driver.find_elements(By.XPATH, f"//span[@text()='Текст {i}']")
-            if test: 
-                for element in test:
-                    print(element.text)
-            else:
-                print("Ended")
-                break
-            i += 1
-    except Exception as ex:
-        print(ex)
+# def find_all_elements(driver):
+#     time.sleep(10)
+#     try:
+#         i = 0
+#         while True:
+#             test = driver.find_elements(By.XPATH, f"//span[@text()='Текст {i}']")
+#             if test: 
+#                 for element in test:
+#                     print(element.text)
+#             else:
+#                 print("Ended")
+#                 break
+#             i += 1
+#     except Exception as ex:
+#         print(ex)
 
-    time.sleep(3)
-    driver.quit()
+#     time.sleep(3)
+#     driver.quit()
 
 def main():
     driver = webdriver.Chrome()
     load_page(driver)
     click_materials()
-    find_id_material(driver)
-    find_all_element_button_lesson(driver)
+    for i in range(10):
+        # 300 - номер урока по html
+        number_lesson = 300 + i
+
+        find_id_material(driver, number_lesson)
+        print("working")
+        find_all_element_button_lesson(driver)
 
     # test()
     # find_all_elements(driver)
